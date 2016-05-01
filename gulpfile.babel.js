@@ -44,22 +44,22 @@ gulp.task('lint', () =>
 gulp.src([
   'app/scripts/**/*.js',
   // angular2 js is not lint safe
-  '!app/scripts/angular2/**/*'
+  '!app/scripts/angular2-site/**/*'
 ])
-    .pipe($.eslint())
-    .pipe($.eslint.format())
-    .pipe($.if(!browserSync.active, $.eslint.failOnError()))
+  .pipe($.eslint())
+  .pipe($.eslint.format())
+  .pipe($.if(!browserSync.active, $.eslint.failOnError()))
 );
 
 // Optimize images
 gulp.task('images', () =>
 gulp.src('app/images/**/*')
-    .pipe($.cache($.imagemin({
-      progressive: true,
-      interlaced: true
-    })))
-    .pipe(gulp.dest('dist/images'))
-    .pipe($.size({title: 'images'}))
+  .pipe($.cache($.imagemin({
+    progressive: true,
+    interlaced: true
+  })))
+  .pipe(gulp.dest('dist/images'))
+  .pipe($.size({title: 'images'}))
 );
 
 // Copy all files at the root level (app)
@@ -71,7 +71,7 @@ gulp.src([
 ], {
   dot: true
 }).pipe(gulp.dest('dist'))
-    .pipe($.size({title: 'copy'}))
+  .pipe($.size({title: 'copy'}))
 );
 
 // Compile and automatically prefix stylesheets
@@ -93,18 +93,18 @@ return gulp.src([
   'app/styles/**/*.scss',
   'app/styles/**/*.css'
 ])
-    .pipe($.newer('.tmp/styles'))
-    .pipe($.sourcemaps.init())
-    .pipe($.sass({
-      precision: 10
-    }).on('error', $.sass.logError))
-    .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
-    .pipe(gulp.dest('.tmp/styles'))
+  .pipe($.newer('.tmp/styles'))
+  .pipe($.sourcemaps.init())
+  .pipe($.sass({
+    precision: 10
+  }).on('error', $.sass.logError))
+  .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
+  .pipe(gulp.dest('.tmp/styles'))
   // Concatenate and minify styles
-    .pipe($.if('*.css', $.cssnano()))
-    .pipe($.size({title: 'styles'}))
-    .pipe($.sourcemaps.write('./'))
-    .pipe(gulp.dest('dist/styles'));
+  .pipe($.if('*.css', $.cssnano()))
+  .pipe($.size({title: 'styles'}))
+  .pipe($.sourcemaps.write('./'))
+  .pipe(gulp.dest('dist/styles'));
 });
 
 // Concatenate and minify JavaScript. Optionally transpiles ES2015 code to ES5.
@@ -125,79 +125,79 @@ gulp.src([
    './node_modules/rxjs/bundles/Rx.js',
    './node_modules/angular2/bundles/angular2.dev.js'*/
 ])
-    .pipe($.newer('.tmp/scripts'))
-    .pipe($.sourcemaps.init())
-    .pipe($.babel())
-    .pipe($.sourcemaps.write())
-    .pipe(gulp.dest('.tmp/scripts'))
-    .pipe($.concat('main.min.js'))
-    .pipe($.uglify({preserveComments: 'some'}))
-  // Output files
-    .pipe($.size({title: 'scripts'}))
-    .pipe($.sourcemaps.write('.'))
-    .pipe(gulp.dest('dist/scripts'))
-
-);
-
-gulp.task('angular2-scripts', ['tsc'], () =>
-gulp.src([
-  // Note: Since we are not using useref in the scripts build pipeline,
-  //       you need to explicitly list your scripts here in the right order
-  //       to be correctly concatenated
-  './app/scripts/angular2/**/*.js'
-])
-  .pipe($.newer('.tmp/scripts/angular2'))
-  .pipe(gulp.dest('.tmp/scripts/angular2'))
+  .pipe($.newer('.tmp/scripts'))
+  .pipe($.sourcemaps.init())
+  .pipe($.babel())
+  .pipe($.sourcemaps.write())
+  .pipe(gulp.dest('.tmp/scripts'))
+  .pipe($.concat('main.min.js'))
   .pipe($.uglify({preserveComments: 'some'}))
   // Output files
   .pipe($.size({title: 'scripts'}))
   .pipe($.sourcemaps.write('.'))
-  .pipe(gulp.dest('dist/scripts/angular2'))
+  .pipe(gulp.dest('dist/scripts'))
+
 );
+
+gulp.task('angular2-scripts', () =>
+gulp.src([
+  // Note: Since we are not using useref in the scripts build pipeline,
+  //       you need to explicitly list your scripts here in the right order
+  //       to be correctly concatenated
+  './app/scripts/angular2-site/**/*.js'
+])
+  .pipe($.newer('.tmp/scripts/angular2-site'))
+  .pipe(gulp.dest('.tmp/scripts/angular2-site'))
+  .pipe($.uglify({preserveComments: 'some'}))
+  // Output files
+  .pipe($.size({title: 'scripts'}))
+  .pipe($.sourcemaps.write('.'))
+  .pipe(gulp.dest('dist/scripts/angular2-site'))
+);
+
+// Scan your HTML for assets & optimize them
+gulp.task('html', () => {
+  return gulp.src('app/**/*.html')
+    .pipe($.useref({searchPath: '{.tmp,app}'}))
+    // Remove any unused CSS
+    .pipe($.if('*.css', $.uncss({
+      html: [
+        'app/index.html'
+      ],
+      // CSS Selectors for UnCSS to ignore
+      ignore: []
+    })))
+
+    // Concatenate and minify styles
+    // In case you are still using useref build blocks
+    .pipe($.if('*.css', $.cssnano()))
+
+    // Minify any HTML
+    .pipe($.if('*.html', $.htmlmin({
+      removeComments: true,
+      collapseWhitespace: true,
+      collapseBooleanAttributes: true,
+      removeAttributeQuotes: true,
+      removeRedundantAttributes: true,
+      removeEmptyAttributes: true,
+      removeScriptTypeAttributes: true,
+      removeStyleLinkTypeAttributes: true,
+      removeOptionalTags: true
+    })))
+    // Output files
+    .pipe($.if('*.html', $.size({title: 'html', showFiles: true})))
+    .pipe(gulp.dest('dist'));
+});
+
+// Clean output directory
+gulp.task('clean', () => del(['.tmp', 'dist/*', 'app/scripts/angular2-site/*', '!dist/.git'], {dot: true}));
 
 gulp.task('tsc', () => {
   spawn('npm', ['run', 'tsc']);
 });
 
-// Scan your HTML for assets & optimize them
-gulp.task('html', () => {
-  return gulp.src('app/**/*.html')
-      .pipe($.useref({searchPath: '{.tmp,app}'}))
-    // Remove any unused CSS
-      .pipe($.if('*.css', $.uncss({
-        html: [
-          'app/index.html'
-        ],
-        // CSS Selectors for UnCSS to ignore
-        ignore: []
-      })))
-
-    // Concatenate and minify styles
-    // In case you are still using useref build blocks
-      .pipe($.if('*.css', $.cssnano()))
-
-    // Minify any HTML
-      .pipe($.if('*.html', $.htmlmin({
-        removeComments: true,
-        collapseWhitespace: true,
-        collapseBooleanAttributes: true,
-        removeAttributeQuotes: true,
-        removeRedundantAttributes: true,
-        removeEmptyAttributes: true,
-        removeScriptTypeAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        removeOptionalTags: true
-      })))
-    // Output files
-      .pipe($.if('*.html', $.size({title: 'html', showFiles: true})))
-      .pipe(gulp.dest('dist'));
-});
-
-// Clean output directory
-gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git'], {dot: true}));
-
 // Watch files for changes & reload
-gulp.task('serve', ['copy-angular2-scripts','scripts', 'styles'], () => {
+gulp.task('serve', ['tsc', 'copy-angular2-scripts','scripts', 'styles'], () => {
   browserSync({
     notify: false,
     // Customize the Browsersync console logging prefix
@@ -219,8 +219,8 @@ gulp.watch(['app/images/**/*'], reload);
 // added for typeScript change
 gulp.watch(['ts/**/*.ts'], () => {
   spawn('npm', ['run', 'tsc']);
-  reload();
-  });
+reload();
+});
 });
 
 // Build and serve the output from the dist build
@@ -242,10 +242,11 @@ browserSync({
 // Build production files, the default task
 gulp.task('default', ['clean'], cb =>
 runSequence(
-    'styles',
-    ['lint', 'html', 'scripts', 'images', 'copy', 'copy-angular2-scripts'],
-    'generate-service-worker',
-    cb
+  'tsc',
+  'styles',
+  ['lint', 'html', 'scripts', 'images', 'copy', 'copy-angular2-scripts'],
+  'generate-service-worker',
+  cb
 )
 );
 
@@ -263,7 +264,7 @@ pagespeed('example.com', {
 // Copy over the scripts that are used in importScripts as part of the generate-service-worker task.
 gulp.task('copy-sw-scripts', () => {
   return gulp.src(['node_modules/sw-toolbox/sw-toolbox.js', 'app/scripts/sw/runtime-caching.js'])
-      .pipe(gulp.dest('dist/scripts/sw'));
+    .pipe(gulp.dest('dist/scripts/sw'));
 });
 
 // Copy over the scripts that are used in importScripts as part of the generate-service-worker task.
@@ -275,10 +276,12 @@ gulp.task('copy-angular2-scripts', () => {
     './node_modules/angular2/bundles/angular2-polyfills.js',
     './node_modules/systemjs/dist/system.src.js',
     './node_modules/rxjs/bundles/Rx.js',
-    './node_modules/angular2/bundles/angular2.dev.js'
+    './node_modules/angular2/bundles/angular2.dev.js',
+    './node_modules/angular2/bundles/http.dev.js',
+    './node_modules/angular2/bundles/router.dev.js'
   ])
-      .pipe(gulp.dest('.tmp/scripts'))
-      .pipe(gulp.dest('dist/scripts'));
+    .pipe(gulp.dest('.tmp/scripts'))
+    .pipe(gulp.dest('dist/scripts'));
 });
 
 // See http://www.html5rocks.com/en/tutorials/service-worker/introduction/ for

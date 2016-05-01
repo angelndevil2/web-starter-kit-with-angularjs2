@@ -8,7 +8,7 @@
     "experimentalDecorators": true,
     "removeComments": false,
     "noImplicitAny": false,
-    "outDir":"app/scripts/angular2",
+    "outDir":"app/scripts/angular2-site",
     "rootDir":"ts"
   },
   "exclude": [
