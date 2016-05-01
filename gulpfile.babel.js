@@ -280,6 +280,7 @@ gulp.task('copy-angular2-scripts', () => {
     './node_modules/angular2/bundles/http.dev.js',
     './node_modules/angular2/bundles/router.dev.js'
   ])
+    .pipe($.uglify({preserveComments: 'some'}))
     .pipe(gulp.dest('.tmp/scripts'))
     .pipe(gulp.dest('dist/scripts'));
 });
