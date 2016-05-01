@@ -177,12 +177,13 @@ gulp.task('html', () => {
       removeComments: true,
       collapseWhitespace: true,
       collapseBooleanAttributes: true,
-      removeAttributeQuotes: true,
+      removeAttributeQuotes: false,
       removeRedundantAttributes: true,
       removeEmptyAttributes: true,
       removeScriptTypeAttributes: true,
       removeStyleLinkTypeAttributes: true,
-      removeOptionalTags: true
+      removeOptionalTags: true,
+      caseSensitive: true
     })))
     // Output files
     .pipe($.if('*.html', $.size({title: 'html', showFiles: true})))
