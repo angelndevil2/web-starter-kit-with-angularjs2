@@ -139,21 +139,25 @@ gulp.src([
 
 );
 
-gulp.task('angular2-scripts', () =>
-    gulp.src([
-      // Note: Since we are not using useref in the scripts build pipeline,
-      //       you need to explicitly list your scripts here in the right order
-      //       to be correctly concatenated
-      './app/scripts/angular2/**/*.js'
-    ])
-    .pipe($.newer('.tmp/scripts/angular2'))
-    .pipe(gulp.dest('.tmp/scripts/angular2'))
-    .pipe($.uglify({preserveComments: 'some'}))
+gulp.task('angular2-scripts', ['tsc'], () =>
+gulp.src([
+  // Note: Since we are not using useref in the scripts build pipeline,
+  //       you need to explicitly list your scripts here in the right order
+  //       to be correctly concatenated
+  './app/scripts/angular2/**/*.js'
+])
+  .pipe($.newer('.tmp/scripts/angular2'))
+  .pipe(gulp.dest('.tmp/scripts/angular2'))
+  .pipe($.uglify({preserveComments: 'some'}))
   // Output files
-    .pipe($.size({title: 'scripts'}))
-    .pipe($.sourcemaps.write('.'))
-    .pipe(gulp.dest('dist/scripts/angular2'))
+  .pipe($.size({title: 'scripts'}))
+  .pipe($.sourcemaps.write('.'))
+  .pipe(gulp.dest('dist/scripts/angular2'))
 );
+
+gulp.task('tsc', () => {
+  spawn('npm', ['run', 'tsc']);
+});
 
 // Scan your HTML for assets & optimize them
 gulp.task('html', () => {
