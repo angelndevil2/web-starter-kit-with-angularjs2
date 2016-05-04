@@ -10,6 +10,9 @@ System.register(['angular2/core'], function(exports_1, context_1) {
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
+    var __param = (this && this.__param) || function (paramIndex, decorator) {
+        return function (target, key) { decorator(target, key, paramIndex); }
+    };
     var core_1;
     var AppComponent;
     return {
@@ -19,14 +22,21 @@ System.register(['angular2/core'], function(exports_1, context_1) {
             }],
         execute: function() {
             AppComponent = (function () {
-                function AppComponent() {
+                function AppComponent(elementRef) {
+                    this.elementRef = elementRef;
                 }
+                AppComponent.prototype.ngOnInit = function () {
+                    // window.componentHandler.upgradeElement is provided by Material Design Lite
+                    // and is necessary to call in order to "augment" dynamically added HTML
+                    componentHandler.upgradeElement(this.elementRef.nativeElement.firstElementChild);
+                };
                 AppComponent = __decorate([
                     core_1.Component({
                         selector: 'my-app',
                         template: '<h1>My First Angular 2 App</h1>'
-                    }), 
-                    __metadata('design:paramtypes', [])
+                    }),
+                    __param(0, core_1.Inject(core_1.ElementRef)), 
+                    __metadata('design:paramtypes', [core_1.ElementRef])
                 ], AppComponent);
                 return AppComponent;
             }());
