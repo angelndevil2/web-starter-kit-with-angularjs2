@@ -8,7 +8,15 @@
         'app':                        'scripts', // 'dist',
         'rxjs':                       'scripts/rxjs',
         'angular2-in-memory-web-api': 'scripts/angular2-in-memory-web-api',
-        '@angular':                   'scripts/@angular'
+        '@angular/common': 'scripts/@angular/common/common.umd.js',
+        '@angular/compiler': 'scripts/@angular/compiler/compiler.umd.js',
+        '@angular/core': 'scripts/@angular/core/core.umd.js',
+        '@angular/http': 'scripts/@angular/http/http.umd.js',
+        '@angular/platform-browser': 'scripts/@angular/platform-browser/platform-browser.umd.js',
+        '@angular/router': 'scripts/@angular/router/router.umd.js',
+        '@angular/outer-deprecated': 'scripts/@angular/outer/outer-deprecated.umd.js',
+        '@angular/upgrade': 'scripts/@angular/upgrade/upgrade.umd.js',
+        '@angular/platform-browser-dynamic': 'scripts/@angular/platform-browser-dynamic/platform-browser-dynamic.umd.js'
     };
 
     // packages tells the System loader how to load when no filename and/or no extension
@@ -17,24 +25,6 @@
         'rxjs':                       { defaultExtension: 'js' },
         'angular2-in-memory-web-api': { defaultExtension: 'js' },
     };
-
-    var packageNames = [
-        '@angular/common',
-        '@angular/compiler',
-        '@angular/core',
-        '@angular/http',
-        '@angular/platform-browser',
-        '@angular/platform-browser-dynamic',
-        '@angular/router',
-        '@angular/router-deprecated',
-        '@angular/testing',
-        '@angular/upgrade',
-    ];
-
-    // add package entries for angular packages in the form '@angular/common': { main: 'index.js', defaultExtension: 'js' }
-    packageNames.forEach(function(pkgName) {
-        packages[pkgName] = { main: 'index.js', defaultExtension: 'js' };
-    });
 
     var config = {
         map: map,

@@ -191,7 +191,7 @@ gulp.task('html', () => {
 });
 
 // Clean output directory
-gulp.task('clean', () => del(['.tmp', 'dist/*', 'app/scripts/angular2-site/*', '!dist/.git'], {dot: true}));
+gulp.task('clean', () => del(['.tmp', 'dist/**/*', 'app/scripts/angular2-site/*', '!dist/.git'], {dot: true}));
 
 gulp.task('tsc', () => {
   spawn('npm', ['run', 'tsc']);
@@ -253,7 +253,7 @@ runSequence(
 
 // Run PageSpeed Insights
 gulp.task('pagespeed', cb =>
-  // Update the below URL to the public URL of your site
+// Update the below URL to the public URL of your site
 pagespeed('example.com', {
   strategy: 'mobile'
   // By default we use the PageSpeed Insights free (no API key) tier.
@@ -273,39 +273,40 @@ gulp.task('copy-angular2-scripts', () => {
 
   // copy packages
   gulp.src([
-    './node_modules/rxjs/**/**.js',
-    '!./node_modules/rxjs/bunnles/**/*',
-    '!./node_modules/rxjs/src/**/*',
-    '!./node_modules/rxjs/testing/**/*'
-  ])
-    .pipe(gulp.dest('.tmp/scripts/rxjs'))
-    .pipe(gulp.dest('dist/scripts/rxjs'));
+  './node_modules/rxjs/**/**.js',
+  '!./node_modules/rxjs/bunnles/**/*',
+  '!./node_modules/rxjs/src/**/*',
+  '!./node_modules/rxjs/testing/**/*'
+])
+  .pipe($.uglify({preserveComments: 'some'}))
+  .pipe(gulp.dest('.tmp/scripts/rxjs'))
+  .pipe(gulp.dest('dist/scripts/rxjs'));
 
 gulp.src([
   './node_modules/angular2-in-memory-web-api/**/**.js',
   '!./node_modules/angular2-in-memory-web-api/src/**/*'
 ])
+  .pipe($.uglify({preserveComments: 'some'}))
   .pipe(gulp.dest('.tmp/scripts/angular2-in-memory-web-api'))
   .pipe(gulp.dest('dist/scripts/angular2-in-memory-web-api'));
 
 
 gulp.src([
-  './node_modules/@angular/**/**.js',
-  '!./node_modules/rxjs/src/**/*',
-  '!./node_modules/rxjs/testing/**/*'
+  './node_modules/@angular/**/*.umd.js',
 ])
+  .pipe($.uglify({preserveComments: 'some'}))
   .pipe(gulp.dest('.tmp/scripts/@angular'))
   .pipe(gulp.dest('dist/scripts/@angular'));
 
-  return gulp.src([
-    './node_modules/es6-shim/es6-shim.min.js',
-    './node_modules/systemjs/dist/system.src.js',
-    './node_modules/reflect-metadata/Reflect.js',
-    './node_modules/zone.js/dist/zone.js'
-  ])
-    .pipe($.uglify({preserveComments: 'some'}))
-    .pipe(gulp.dest('.tmp/scripts'))
-    .pipe(gulp.dest('dist/scripts'));
+return gulp.src([
+  './node_modules/es6-shim/es6-shim.min.js',
+  './node_modules/systemjs/dist/system.src.js',
+  './node_modules/reflect-metadata/Reflect.js',
+  './node_modules/zone.js/dist/zone.js'
+])
+  .pipe($.uglify({preserveComments: 'some'}))
+  .pipe(gulp.dest('.tmp/scripts'))
+  .pipe(gulp.dest('dist/scripts'));
 });
 
 // See http://www.html5rocks.com/en/tutorials/service-worker/introduction/ for
@@ -327,18 +328,18 @@ return swPrecache.write(filepath, {
   ],
   staticFileGlobs: [
 // Add/remove glob patterns to match your directory setup.
-`${rootDir}/images/**/*`,
- `${rootDir}/scripts/**/*.js`,
-`${rootDir}/styles/**/*.css`,
- `${rootDir}/*.{html,json}`
- ],
- // Translates a static file path to the relative URL that it's served from.
- // This is '/' rather than path.sep because the paths returned from
- // glob always use '/'.
- stripPrefix: rootDir + '/'
- });
- });
+    `${rootDir}/images/**/*`,
+    `${rootDir}/scripts/**/*.js`,
+    `${rootDir}/styles/**/*.css`,
+    `${rootDir}/*.{html,json}`
+  ],
+  // Translates a static file path to the relative URL that it's served from.
+  // This is '/' rather than path.sep because the paths returned from
+  // glob always use '/'.
+  stripPrefix: rootDir + '/'
+});
+});
 
- // Load custom tasks from the `tasks` directory
- // Run: `npm install --save-dev require-dir` from the command-line
- // try { require('require-dir')('tasks'); } catch (err) { console.error(err); }
+// Load custom tasks from the `tasks` directory
+// Run: `npm install --save-dev require-dir` from the command-line
+// try { require('require-dir')('tasks'); } catch (err) { console.error(err); }
