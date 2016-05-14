@@ -1,7 +1,7 @@
 /**
  * Created by k on 16. 4. 30.
  */
-import {Component, Inject, ElementRef, OnInit} from 'angular2/core';
+import {Component, Inject, ElementRef, OnInit} from '@angular/core';
 declare var componentHandler: any;
 
 @Component({

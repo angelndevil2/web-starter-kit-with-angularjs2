@@ -39,29 +39,20 @@
   <link rel="canonical" href="http://www.example.com/">
   -->
 
-  <!-- IE required polyfills, in this exact order -->
+  <!-- 1. Load libraries -->
+  <!-- Polyfill(s) for older browsers -->
   <script src="scripts/es6-shim.min.js"></script>
-  <script src="scripts/system-polyfills.js"></script>
-  <script src="scripts/shims_for_IE.js"></script>
-  <script src="scripts/angular2-polyfills.js"></script>
+
+  <script src="scripts/zone.js"></script>
+  <script src="scripts/Reflect.js"></script>
   <script src="scripts/system.src.js"></script>
-  <script src="scripts/Rx.js"></script>
-  <script src="scripts/angular2.dev.js"></script>
-  <script src="scripts/http.dev.js"></script>
-  <script src="scripts/router.dev.js"></script>
+
   <!-- 2. Configure SystemJS -->
+  <script src="systemjs.config.js"></script>
   <script>
-    System.config({
-      packages: {
-        'scripts/angular2-site': {
-          format: 'register',
-          defaultExtension: 'js'
-        }
-      }
-    });
-    System.import('scripts/angular2-site/app')
-            .then(null, console.error.bind(console));
+    System.import('app/angular2-site/app').catch(function(err){ console.error(err); });
   </script>
+
 </head>
 <body>
 <!-- Add your site or app content here -->
@@ -76,6 +67,12 @@
   ga('create', 'UA-XXXXX-X', 'auto');
   ga('send', 'pageview');
 </script>
+
+<script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
+<!-- build:js(app/) ../../scripts/main.min.js -->
+<script src="scripts/main.js"></script>
+<!-- endbuild -->
+
 <!-- Built with love using Web Starter Kit -->
 </body>
 </html>

@@ -270,16 +270,38 @@ gulp.task('copy-sw-scripts', () => {
 
 // Copy over the scripts that are used in importScripts as part of the generate-service-worker task.
 gulp.task('copy-angular2-scripts', () => {
+
+  // copy packages
+  gulp.src([
+    './node_modules/rxjs/**/**.js',
+    '!./node_modules/rxjs/bunnles/**/*',
+    '!./node_modules/rxjs/src/**/*',
+    '!./node_modules/rxjs/testing/**/*'
+  ])
+    .pipe(gulp.dest('.tmp/scripts/rxjs'))
+    .pipe(gulp.dest('dist/scripts/rxjs'));
+
+gulp.src([
+  './node_modules/angular2-in-memory-web-api/**/**.js',
+  '!./node_modules/angular2-in-memory-web-api/src/**/*'
+])
+  .pipe(gulp.dest('.tmp/scripts/angular2-in-memory-web-api'))
+  .pipe(gulp.dest('dist/scripts/angular2-in-memory-web-api'));
+
+
+gulp.src([
+  './node_modules/@angular/**/**.js',
+  '!./node_modules/rxjs/src/**/*',
+  '!./node_modules/rxjs/testing/**/*'
+])
+  .pipe(gulp.dest('.tmp/scripts/@angular'))
+  .pipe(gulp.dest('dist/scripts/@angular'));
+
   return gulp.src([
     './node_modules/es6-shim/es6-shim.min.js',
-    './node_modules/systemjs/dist/system-polyfills.js',
-    './node_modules/angular2/es6/prod/src/testing/shims_for_IE.js',
-    './node_modules/angular2/bundles/angular2-polyfills.js',
     './node_modules/systemjs/dist/system.src.js',
-    './node_modules/rxjs/bundles/Rx.js',
-    './node_modules/angular2/bundles/angular2.dev.js',
-    './node_modules/angular2/bundles/http.dev.js',
-    './node_modules/angular2/bundles/router.dev.js'
+    './node_modules/reflect-metadata/Reflect.js',
+    './node_modules/zone.js/dist/zone.js'
   ])
     .pipe($.uglify({preserveComments: 'some'}))
     .pipe(gulp.dest('.tmp/scripts'))
