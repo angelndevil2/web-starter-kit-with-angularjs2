@@ -14,7 +14,7 @@
         '@angular/http': 'scripts/@angular/http/http.umd.js',
         '@angular/platform-browser': 'scripts/@angular/platform-browser/platform-browser.umd.js',
         '@angular/router': 'scripts/@angular/router/router.umd.js',
-        '@angular/outer-deprecated': 'scripts/@angular/outer/outer-deprecated.umd.js',
+        '@angular/router-deprecated': 'scripts/@angular/router-deprecated/router-deprecated.umd.js',
         '@angular/upgrade': 'scripts/@angular/upgrade/upgrade.umd.js',
         '@angular/platform-browser-dynamic': 'scripts/@angular/platform-browser-dynamic/platform-browser-dynamic.umd.js'
     };
