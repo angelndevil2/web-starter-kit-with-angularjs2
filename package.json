@@ -1,4 +1,6 @@
 {
+  "name": "web-starter-kit-with-angularjs2",
+  "version": "1.0.0",
   "devDependencies": {
     "apache-server-configs": "^2.7.1",
     "babel-core": "^6.0.15",
